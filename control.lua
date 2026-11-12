@@ -28,8 +28,8 @@ end
 local function are_loadable(entities)
 	for _,entity in pairs(entities) do
 		if entity.get_inventory(defines.inventory.chest) or
-			entity.get_inventory(defines.inventory.furnace_source) or
-			entity.get_inventory(defines.inventory.assembling_machine_input) or
+			entity.get_inventory(defines.inventory.crafter_input) or
+			entity.get_inventory(defines.inventory.crafter_input) or
 			entity.get_inventory(defines.inventory.lab_input) or
 			entity.get_inventory(defines.inventory.rocket_silo_rocket)
 		then return true end
@@ -103,7 +103,7 @@ end
 script.on_event(defines.events.on_built_entity, on_built_entity, {{filter="type", type = "loader-1x1"}})
 
 -- auto-unstacking by ownlyme
-local function auto_unstack(item_name, item_count, sending_inventory, receiving_inventory)
+local function auto_unstack(item_name, item_count, sending_inventory, receiving_inventory, quality)
 	-- item_name: The name of the stacked item which should be unstacked
 	-- item_count: The number of items that should be unstacked
 	-- sending_inventory: the inventory that contains the stacked item
@@ -121,6 +121,7 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 		local inserted = receiving_inventory.insert({
 			name = string.sub(item_name, 16),
 			count = add_count * item_count,
+			quality = quality,
 		})
 		
 		local partial_inserted = inserted % add_count 
@@ -130,6 +131,7 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 			receiving_inventory.remove({
 				name = string.sub(item_name, 16),
 				count = partial_inserted,
+				quality = quality,
 			})
 		end
 		-- now remove the inserted items in their stacked variant. With the example above this is 1 stacked item
@@ -138,6 +140,7 @@ local function auto_unstack(item_name, item_count, sending_inventory, receiving_
 			sending_inventory.remove({
 				name = item_name,
 				count = full_stack_inserted,
+				quality = quality,
 			})
 		end
 	end
@@ -145,18 +148,18 @@ end
 
 local inventories_to_check = {
 	defines.inventory.chest, 
-	defines.inventory.furnace_source, 
-	defines.inventory.furnace_result,
+	defines.inventory.crafter_input, 
+	defines.inventory.crafter_output,
 	defines.inventory.cargo_wagon,
-	defines.inventory.assembling_machine_input,
-	defines.inventory.assembling_machine_output,
+	defines.inventory.crafter_input,
+	defines.inventory.crafter_output,
 	defines.inventory.robot_cargo,
 }
 local function try_unstacking(entity, inventory_type, player_inventory)
 	local mined_entity_inventory = entity.get_inventory(inventory_type)
 	if mined_entity_inventory then
-		for item_name, item_count in pairs(mined_entity_inventory.get_contents()) do
-			auto_unstack(item_name, item_count, mined_entity_inventory, player_inventory)
+		for _, stack in pairs(mined_entity_inventory.get_contents()) do
+			auto_unstack(stack.name, stack.count, mined_entity_inventory, player_inventory, stack.quality)
 		end
 	end
 end
@@ -170,12 +173,12 @@ local function on_pre_player_mined_item(event)
 end
 local function on_picked_up_item(event) 
 	local player_inventory = game.players[event.player_index].get_main_inventory()
-	auto_unstack(event.item_stack.name, event.item_stack.count, player_inventory, player_inventory)
+	auto_unstack(event.item_stack.name, event.item_stack.count, player_inventory, player_inventory, event.item_stack.quality)
 end
 local function on_player_mined_entity(event) 
 	local player_inventory = game.players[event.player_index].get_main_inventory()
-	for item_name, item_count in pairs(event.buffer.get_contents()) do
-		auto_unstack(item_name, item_count, event.buffer, player_inventory)
+	for _, stack in pairs(event.buffer.get_contents()) do
+		auto_unstack(stack.name, stack.count, event.buffer, player_inventory, stack.quality)
 	end
 end
 -- conditionally register based on the state of the setting so it's not costing any performance when disabled
@@ -198,7 +201,7 @@ local function on_configuration_changed(config)
 			if tech_table.researched then
 				-- find any beltboxes or loaders or stacks in effects and unlock
 				for _, effect_table in ipairs(tech_table.prototype.effects) do
-					if effect_table.type == "unlock-recipe" and (string.find(prototypes.recipe[effect_table.recipe].order, "%-deadlock%-") or string.find(prototypes.recipe[effect_table.recipe].name, "deadlock%-")) then
+					if effect_table.type == "unlock-recipe" and (string.find(prototypes.recipe[effect_table.recipe].order or "", "%-deadlock%-") or string.find(prototypes.recipe[effect_table.recipe].name, "deadlock%-")) then
 						force.recipes[effect_table.recipe].enabled = true
 					end
 				end
@@ -207,3 +210,4 @@ local function on_configuration_changed(config)
 	end
 end
 script.on_configuration_changed(on_configuration_changed)
+

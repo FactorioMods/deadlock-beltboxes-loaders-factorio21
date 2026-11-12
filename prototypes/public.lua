@@ -89,7 +89,7 @@ function deadlock.add_tier(tier_table)
 	end
 	if not tier_table.loader_category then
 		if data.raw.recipe[tier_table.underground_belt] then
-			tier_table.loader_category = data.raw.recipe[tier_table.underground_belt].category
+			tier_table.loader_categories = data.raw.recipe[tier_table.underground_belt].categories
 		else
 			tier_table.loader_category = "crafting"
 		end
@@ -103,7 +103,7 @@ function deadlock.add_tier(tier_table)
 	end
 	if not tier_table.beltbox_category then
 		if data.raw.recipe[tier_table.underground_belt] then
-			tier_table.beltbox_category = data.raw.recipe[tier_table.underground_belt].category
+			tier_table.beltbox_categories = data.raw.recipe[tier_table.underground_belt].categories
 		else
 			tier_table.beltbox_category = "crafting"
 		end

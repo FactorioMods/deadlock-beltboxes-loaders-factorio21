@@ -1,0 +1,5 @@
+Original mod: deadlock-beltboxes-loaders
+Original author: Deadlock989, Shane Madden, MasterBuilder
+Original release: https://mods.factorio.com/mod/deadlock-beltboxes-loaders
+Compatibility fork: https://github.com/FactorioMods/deadlock-beltboxes-loaders-factorio21
+Original source credits and licenses remain applicable.

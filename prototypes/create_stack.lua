@@ -59,7 +59,7 @@ function DBL.create_stacked_item(item_name, item_type, graphic_path, icon_size, 
 			return
 		end
 		DBL.log_warning(string.format("creating layered stack icon (%s), this is %dx more rendering effort than a custom icon!", item_name, 1+(#temp_icons*3)))
-		stacked_icons = { { icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/blank.png", scale = 1, icon_size = 32 } }
+		stacked_icons = { { icon = "__deadlock-beltboxes-loaders-factorio21__/graphics/icons/square/blank.png", scale = 1, icon_size = 32 } }
 		for i = 1, -1, -1 do
 			for _,layer in pairs(temp_icons) do
 				layer.scale = 0.85 * 32/layer.icon_size
@@ -102,7 +102,7 @@ function DBL.deferred_stacked_item_updates()
 				DBL.log_warning(string.format("Full stack density for %s is reduced to %d from source stack size %d, doesn't divide cleanly by %d", stacked_item_name, (data.raw.item[stacked_item_name].stack_size * stack_size), data.raw[item_type][item_name].stack_size, stack_size))
 			end
 			if data.raw[item_type][item_name].fuel_value then
-				data.raw.item[stacked_item_name].fuel_category = data.raw[item_type][item_name].fuel_category
+				data.raw.item[stacked_item_name].fuel_categories = data.raw[item_type][item_name].fuel_categories
 				data.raw.item[stacked_item_name].fuel_acceleration_multiplier = data.raw[item_type][item_name].fuel_acceleration_multiplier
 				data.raw.item[stacked_item_name].fuel_top_speed_multiplier = data.raw[item_type][item_name].fuel_top_speed_multiplier
 				data.raw.item[stacked_item_name].fuel_emissions_multiplier = data.raw[item_type][item_name].fuel_emissions_multiplier
@@ -130,7 +130,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 	local stack_icons = table.deepcopy(base_icons)
 	table.insert(stack_icons,
 		{
-			icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-d-64.png",
+			icon = "__deadlock-beltboxes-loaders-factorio21__/graphics/icons/square/arrow-d-64.png",
 			scale = 0.25,
 			icon_size = 64,
 		}
@@ -140,7 +140,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 			type = "recipe",
 			name = string.format("deadlock-stacks-stack-%s", item_name),
 			localised_name = {"recipe-name.deadlock-stacking-stack", get_localised_name(item_name)},
-			category = "stacking",
+			categories = {"stacking"},
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
 			order = DBL.recipe_order[item_name].."[a]",
@@ -159,7 +159,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 	local unstack_icons = table.deepcopy(base_icons)
 	table.insert(unstack_icons,
 		{
-			icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-u-64.png",
+			icon = "__deadlock-beltboxes-loaders-factorio21__/graphics/icons/square/arrow-u-64.png",
 			scale = 0.25,
 			icon_size = 64,
 		}
@@ -169,7 +169,7 @@ function DBL.create_stacking_recipes(item_name, item_type, stack_size)
 			type = "recipe",
 			name = string.format("deadlock-stacks-unstack-%s", item_name),
 			localised_name = {"recipe-name.deadlock-stacking-unstack", get_localised_name(item_name)},
-			category = "unstacking",
+			categories = {"unstacking"},
 			group = "intermediate-products",
 			subgroup = data.raw.item[string.format("deadlock-stack-%s", item_name)].subgroup,
 			order = DBL.recipe_order[item_name].."[b]",

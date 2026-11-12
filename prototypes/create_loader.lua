@@ -21,8 +21,8 @@ local function create_loader_entity(tier_table)
 	entity.name = tier_table.loader
 	entity.localised_description = {"entity-description.deadlock-loader"}
 	entity.icons = {
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/loader-icon-base.png" },
-		{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/loader-icon-mask.png", tint = tier_table.colour },
+		{ icon = "__deadlock-beltboxes-loaders-factorio21__/graphics/icons/mipmaps/loader-icon-base.png" },
+		{ icon = "__deadlock-beltboxes-loaders-factorio21__/graphics/icons/mipmaps/loader-icon-mask.png", tint = tier_table.colour },
 	}
 	entity.icon_size = 64
 	entity.icon_mipmaps = 4
@@ -37,7 +37,7 @@ local function create_loader_entity(tier_table)
 	entity.minable = { hardness = 0.2, mining_time = 0.5, result = tier_table.loader_item or tier_table.loader}
 	entity.max_health = 170
 	entity.resistances = {{type = "fire", percent = 60 }}
-	entity.belt_distance = 0.5
+	-- Factorio 2.1 uses belt_length below; belt_distance was removed.
 	entity.container_distance = 1
 	entity.belt_length = 0.5
 	entity.filter_count = 5
@@ -51,7 +51,7 @@ local function create_loader_entity(tier_table)
 	entity.structure = {
 		back_patch = {
 			sheet = {
-				filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-back.png",
+				filename = "__deadlock-beltboxes-loaders-factorio21__/graphics/entities/high/loader-back.png",
 				height = 96,
 				priority = "extra-high",
 				width = 96,
@@ -63,7 +63,7 @@ local function create_loader_entity(tier_table)
 			sheets = {
 				{
 					draw_as_shadow = true,
-					filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-shadow.png",
+					filename = "__deadlock-beltboxes-loaders-factorio21__/graphics/entities/high/loader-shadow.png",
 					height = 96,
 					priority = "medium",
 					width = 144,
@@ -71,7 +71,7 @@ local function create_loader_entity(tier_table)
 					shift = { 0.5, 0 },
 				},
 				{
-					filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-base.png",
+					filename = "__deadlock-beltboxes-loaders-factorio21__/graphics/entities/high/loader-base.png",
 					height = 96,
 					priority = "extra-high",
 					width = 96,
@@ -79,7 +79,7 @@ local function create_loader_entity(tier_table)
 					shift = { 0, 0 },
 				},
 				{
-					filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-mask.png",
+					filename = "__deadlock-beltboxes-loaders-factorio21__/graphics/entities/high/loader-mask.png",
 					height = 96,
 					priority = "extra-high",
 					width = 96,
@@ -93,7 +93,7 @@ local function create_loader_entity(tier_table)
 			sheets = {
 				{
 					draw_as_shadow = true,
-					filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-shadow.png",
+					filename = "__deadlock-beltboxes-loaders-factorio21__/graphics/entities/high/loader-shadow.png",
 					height = 96,
 					priority = "medium",
 					width = 144,
@@ -101,7 +101,7 @@ local function create_loader_entity(tier_table)
 					shift = { 0.5, 0 },
 				},
 				{
-					filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-base.png",
+					filename = "__deadlock-beltboxes-loaders-factorio21__/graphics/entities/high/loader-base.png",
 					height = 96,
 					priority = "extra-high",
 					width = 96,
@@ -110,7 +110,7 @@ local function create_loader_entity(tier_table)
 					y = 96,
 				},
 				{
-					filename = "__deadlock-beltboxes-loaders__/graphics/entities/high/loader-mask.png",
+					filename = "__deadlock-beltboxes-loaders-factorio21__/graphics/entities/high/loader-mask.png",
 					height = 96,
 					priority = "extra-high",
 					width = 96,
@@ -144,8 +144,8 @@ local function create_loader_item(tier_table)
 		name = tier_table.loader_item or tier_table.loader,
 		localised_description = {"entity-description.deadlock-loader"},
 		icons = {
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/loader-icon-base.png" },
-			{ icon = "__deadlock-beltboxes-loaders__/graphics/icons/mipmaps/loader-icon-mask.png", tint = tier_table.colour },
+			{ icon = "__deadlock-beltboxes-loaders-factorio21__/graphics/icons/mipmaps/loader-icon-base.png" },
+			{ icon = "__deadlock-beltboxes-loaders-factorio21__/graphics/icons/mipmaps/loader-icon-mask.png", tint = tier_table.colour },
 		},
 		icon_size = 64,
 		icon_mipmaps = 4,
@@ -164,7 +164,7 @@ local function create_loader_recipe(tier_table)
 		type = "recipe",
 		name = tier_table.loader_recipe or tier_table.loader,
 		localised_description = {"entity-description.deadlock-loader"},
-		category = tier_table.loader_category,
+		categories = tier_table.loader_category == "crafting-with-fluid-or-metallurgy" and {"crafting-with-fluid", "metallurgy"} or (tier_table.loader_category and {tier_table.loader_category} or tier_table.loader_categories),
 		group = "logistics",
 		subgroup = "loaders",
 		order = string.format("a%s%s", (tier_table.order or tier_table.loader), "-deadlock-loader"),
@@ -202,3 +202,4 @@ function DBL.create_loader(tier_table)
 		)
 	end
 end
+
